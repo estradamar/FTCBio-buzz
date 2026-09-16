@@ -10,7 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
-@TeleOp(name = "chasis", group = "Linear OpMode")
+@TeleOp(name = "chassis", group = "Linear OpMode")
 public class chassis extends LinearOpMode {
     private DcMotorEx frontLeft = null;
     private DcMotorEx backLeft = null;
