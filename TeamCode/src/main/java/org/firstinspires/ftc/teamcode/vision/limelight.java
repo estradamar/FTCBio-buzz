@@ -18,6 +18,10 @@ public class limelight {
         limelight.start();
     }
 
+    public void update() {
+        // No-op por compatibilidad
+    }
+
     public boolean hasTarget() {
         LLResult result = limelight.getLatestResult();
         return result != null && result.isValid();
