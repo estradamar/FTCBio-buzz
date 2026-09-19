@@ -1,0 +1,27 @@
+public class Robot extends TimedRobot {
+
+    private LimelightAprilTagReader limelight;
+
+    @Override
+    public void robotInit() {
+        limelight = new LimelightAprilTagReader("limelight"); // o el nombre que le hayas puesto
+    }
+
+    @Override
+    public void robotPeriodic() {
+        // Actualiza constantemente
+        limelight.updateDashboard();
+
+        // Ejemplo de uso:
+        if (limelight.hasTarget()) {
+            int id = limelight.getPrimaryTagId();
+            System.out.println("AprilTag detectado con ID: " + id);
+
+            // Si quieres todos los IDs:
+            int[] todos = limelight.getAllTagIds();
+            for (int tagId : todos) {
+                System.out.println("Tag visto: " + tagId);
+            }
+        }
+    }
+}

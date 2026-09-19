@@ -5,15 +5,15 @@ package org.firstinspires.ftc.teamcode.subsystems;
  * mediante valores de velocidad (no es un modo operativo).
  * Solo maneja las velocidades que se envían a los motores.
  */
-public class chassisinopvelocity {
+public class chassisVelocity {
 
     // Velocidades actuales de los motores (unidades: m/s o rad/s según tu sistema)
-    private double leftSpeed  = 0.0;
-    private double rightSpeed = 0.0;
+    public double leftSpeed  = 0.0;
+    public double rightSpeed = 0.0;
 
     // Límites de seguridad (ajusta según tu robot)
-    private static final double MAX_SPEED = 2.0;   // m/s
-    private static final double MIN_SPEED = -2.0;  // m/s
+    public static final double MAX_SPEED = 2.0;   // m/s
+    public static final double MIN_SPEED = -2.0;  // m/s
 
     /**
      * Establece la velocidad del motor izquierdo.
@@ -65,7 +65,7 @@ public class chassisinopvelocity {
 
     // ========== Utilidades privadas ==========
 
-    private double saturate(double speed) {
+    public double saturate(double speed) {
         if (speed > MAX_SPEED) return MAX_SPEED;
         if (speed < MIN_SPEED) return MIN_SPEED;
         return speed;
@@ -80,4 +80,5 @@ public class chassisinopvelocity {
 
 //velocidad de el chassis
 
-// ocupa
+// ocupa 2
+

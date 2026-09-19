@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems;
+/*package org.firstinspires.ftc.teamcode.subsystems;
 
 public class chassisinop {
 
@@ -23,7 +23,7 @@ public class chassisinop {
     /**
      * Establece ambos voltajes al mismo tiempo (útil para control diferencial).
      */
-    public void setVoltages(double leftVoltage, double rightVoltage) {
+   /* public void setVoltages(double leftVoltage, double rightVoltage) {
         setLeftMotorVoltage(leftVoltage);
         setRightMotorVoltage(rightVoltage);
     }
@@ -63,4 +63,4 @@ public class chassisinop {
 
 
 }
-
+*/
