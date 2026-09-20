@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems;
+/*package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
@@ -9,16 +9,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
 import java.util.List;
 
-public class Limelight {
+public class limelight {
 
-    private final Limelight3A limelight;
+    private final Limelight3A limelightSensor;
     private LLResult latestResult;
 
     /**
      * Constructor del subsistema de Limelight.
      * @param hardwareMap Mapa de hardware proveniente del OpMode.
      */
-    public Limelight(HardwareMap hardwareMap) {
+  /*  public limelight(HardwareMap hardwareMap) {
         this(hardwareMap, "limelight");
     }
 
@@ -27,33 +27,33 @@ public class Limelight {
      * @param hardwareMap Mapa de hardware proveniente del OpMode.
      * @param deviceName Nombre configurado en el Control Hub (ej. "limelight").
      */
-    public Limelight(HardwareMap hardwareMap, String deviceName) {
-        limelight = hardwareMap.get(Limelight3A.class, deviceName);
+   /* public limelight(HardwareMap hardwareMap, String deviceName) {
+        limelightSensor = hardwareMap.get(Limelight3A.class, deviceName);
 
         // Seleccionar Pipeline 0 por defecto (debe estar configurado como AprilTag)
-        limelight.pipelineSwitch(0);
-        limelight.start();
+        limelightSensor.pipelineSwitch(0);
+        limelightSensor.start();
     }
 
     /**
      * Actualiza las lecturas de la cámara. Debe llamarse en cada ciclo del loop.
      */
-    public void update() {
-        latestResult = limelight.getLatestResult();
+  /*  public void update() {
+        latestResult = limelightSensor.getLatestResult();
     }
 
     /**
      * Actualiza la información y muestra datos básicos en telemetría.
      * Método invocado por los OpModes principales.
      */
-    public void updateDashboard() {
+  /*  public void updateDashboard() {
         update();
     }
 
     /**
      * Verifica si la cámara detecta algún objetivo válido.
      */
-    public boolean hasTarget() {
+ /*   public boolean hasTarget() {
         if (latestResult == null) update();
         return latestResult != null && latestResult.isValid();
     }
@@ -61,7 +61,7 @@ public class Limelight {
     /**
      * Devuelve la desviación horizontal (tx) respecto al objetivo en grados.
      */
-    public double getTx() {
+  /*  public double getTx() {
         if (hasTarget()) {
             return latestResult.getTx();
         }
@@ -71,7 +71,7 @@ public class Limelight {
     /**
      * Devuelve la desviación vertical (ty) respecto al objetivo en grados.
      */
-    public double getTy() {
+    /*public double getTy() {
         if (hasTarget()) {
             return latestResult.getTy();
         }
@@ -81,7 +81,7 @@ public class Limelight {
     /**
      * Devuelve el área ocupada por el objetivo en la imagen (% de la pantalla).
      */
-    public double getTa() {
+    /*public double getTa() {
         if (hasTarget()) {
             return latestResult.getTa();
         }
@@ -92,7 +92,7 @@ public class Limelight {
      * Obtiene el ID del primer AprilTag detectado.
      * @return El ID del AprilTag, o -1 si no hay ninguno visible.
      */
-    public int getTargetId() {
+   /* public int getTargetId() {
         if (hasTarget()) {
             List<LLResultTypes.FiducialResult> fiducials = latestResult.getFiducialResults();
             if (!fiducials.isEmpty()) {
@@ -106,7 +106,7 @@ public class Limelight {
      * Obtiene la posición 3D estimada del robot respecto al campo (Botpose).
      * Requiere que el mapa del campo esté configurado en la web de Limelight.
      */
-    public Pose3D getBotpose() {
+   /* public Pose3D getBotpose() {
         if (hasTarget()) {
             return latestResult.getBotpose();
         }
@@ -117,14 +117,15 @@ public class Limelight {
      * Cambia el pipeline activo en la cámara.
      * @param pipelineIndex Índice del pipeline (0 a 9).
      */
-    public void setPipeline(int pipelineIndex) {
-        limelight.pipelineSwitch(pipelineIndex);
+  /*  public void setPipeline(int pipelineIndex) {
+        limelightSensor.pipelineSwitch(pipelineIndex);
     }
 
     /**
      * Detiene la cámara.
      */
-    public void stop() {
-        limelight.stop();
+   /* public void stop() {
+        limelightSensor.stop();
     }
 }
+*/
