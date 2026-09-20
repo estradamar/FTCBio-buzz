@@ -1,3 +1,115 @@
+# Contribution Guidelines – FTCBio-buzz
+
+Welcome to the **FTCBio-buzz** repository! To maintain strict control over our robot's codebase and ensure stability across every testing phase and competition, we follow a hierarchical branching model with protected branches and mandatory Pull Request (PR) reviews.
+
+---
+
+## 1. Branch Hierarchy
+
+Core branches are protected against direct changes (*direct pushes are disabled*). No one is allowed to push code directly or merge without an authorized Pull Request.
+
+The lifecycle of code advances strictly in the following order:
+
+```
+master / main (Competition)
+  ▲
+  │  [PR approved by Admin + Coach Approval]
+UAT (User Acceptance Test)
+  ▲
+  │  [PR approved by Admin + Successful physical robot tests]
+SIT (System Integration Test)
+  ▲
+  │  [PR approved by Admin]
+develop (Development Integration)
+  ▲
+  │  [PR approved by Admin]
+feature/<username>/<description> (Individual development)
+```
+
+### Branch Descriptions
+
+* **`master` / `main` (Production / Competition):**
+    * The final, battle-tested build loaded onto the Control Hub / Driver Station during official tournament matches.
+* **`UAT` (User Acceptance Test):**
+    * Code validated and formally approved by team coaches and mentors.
+* **`SIT` (System Integration Test):**
+    * Code that has been physically deployed and verified on the actual robot hardware.
+* **`develop`:**
+    * Active integration branch where different components and modules are combined and tested prior to full hardware integration.
+* **`feature/...` branches:**
+    * Daily working branches where individual team members develop specific modules or bug fixes.
+
+---
+
+## 2. Branch Naming Conventions
+
+All new work branches must branch off **`develop`** and adhere to the following naming pattern:
+
+```text
+feature/<username>/<module-or-description><optional-version>
+```
+
+### Rules:
+
+1. **`<username>`:** Your name or GitHub handle (e.g., `mar`).
+2. **`<module-or-description>`:** A concise label describing what is being developed (e.g., `camara`, `telem`, `vision`).
+3. **Version / Iteration (optional but recommended):** A numeric suffix to distinguish iterations (e.g., `00`, `07`).
+
+### Valid Examples:
+
+* `feature/mar/vision07`
+* `feature/mar/camara`
+* `feature/mar/telem`
+
+---
+
+## 3. Step-by-Step Workflow
+
+### Step 1: Create your local branch
+Ensure your local `develop` branch is up to date before branching off:
+
+```bash
+git checkout develop
+git pull origin develop
+git checkout -b feature/your-username/feature-name
+```
+
+### Step 2: Develop and test individually
+Commit your changes with clear, descriptive messages:
+
+```bash
+git add .
+git commit -m "feat(vision): initial AprilTag pipeline calibration"
+git push origin feature/your-username/feature-name
+```
+
+### Step 3: Pull Request into `develop`
+* Once your feature is working locally/in your unit tests, open a **Pull Request targeting `develop`**.
+* **Requirement:** Merging directly into `develop` is strictly prohibited. Every PR requires review and authorization from the **Repository Administrator**.
+
+### Step 4: Promotion to `SIT` (System Integration Test)
+* Once the components are integrated into `develop` and ready for full hardware verification, a **PR from `develop` to `SIT`** is created.
+* The build must be loaded onto the physical robot and thoroughly tested.
+* Requires approval by the **Repository Administrator**.
+
+### Step 5: Promotion to `UAT` (User Acceptance Test)
+* Once physical testing on `SIT` is successful, open a **PR from `SIT` to `UAT`**.
+* Requires formal review and sign-off from the **coaches/mentors** along with **Admin** authorization.
+
+### Step 6: Deployment to `master` (Competition)
+* Prior to official tournament matches, verified code from `UAT` is promoted to `master` via an administrative Pull Request.
+
+---
+
+## 4. Pull Request (PR) Rules
+
+1. **Descriptive Title:** Clearly indicate the module and purpose (e.g., `feat(vision): AprilTag detection pipeline integration`).
+2. **Detailed Description:**
+    * What was added, modified, or fixed?
+    * How was it tested (simulator, bench test, or robot chassis)?
+3. **No Self-Merging:** Merging your own PR into protected branches is forbidden.
+4. **Keep Branches Synchronized:** If new commits landed in `develop`, perform a `git rebase develop` or `git merge develop` on your feature branch before requesting review.
+
 # Guía de Contribución – FTCBio-buzz
 
 ¡Bienvenidos al repositorio de **FTCBio-buzz**! Para mantener un control estricto del código del robot y asegurar la estabilidad en cada etapa de prueba y competencia, seguimos un flujo de trabajo jerárquico basado en ramas protegidas y revisiones obligatorias mediante Pull Requests (PR).
