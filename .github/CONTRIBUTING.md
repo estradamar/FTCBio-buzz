@@ -1,68 +1,107 @@
-# Contributing to the FTC SDK
+# Guía de Contribución – FTCBio-buzz
 
-The following is a set of guidelines for contributing the FIRST FTC SDK.  The FTC Technology Team welcomes suggestions for improvements to core software, ideas for new features, requests for built-in support of new sensors, and well written bug reports.
+¡Bienvenidos al repositorio de **FTCBio-buzz**! Para mantener un control estricto del código del robot y asegurar la estabilidad en cada etapa de prueba y competencia, seguimos un flujo de trabajo jerárquico basado en ramas protegidas y revisiones obligatorias mediante Pull Requests (PR).
 
-## How can I contribute?
+---
 
-### Pull requests
+## 1. Jerarquía de Ramas
 
-__STOP!__  If you are new to git, do not understand the mechanics of forks, branches, and pulls, if what you just read is confusing, __do not__ push this button.  Most likely it won't do what you think it will.
+El repositorio cuenta con ramas protegidas contra cambios directos (*push directo bloqueado*). Nadie puede subir cambios ni hacer merge directamente sin un Pull Request autorizado.
 
-![Pull Button](../doc/media/PullRequest.PNG)
+El ciclo de vida del código avanza en el siguiente orden estricto:
 
-If you are looking at this button then you've pushed some changes to your team's fork of ftctechnh/ftc_app.  Congratulations!  You are almost certainly finished.
+```text
+master / main (Competencia)
+  ▲
+  │  [PR aprobado por Admin + Aprobación de Coaches]
+UAT (User Acceptance Test)
+  ▲
+  │  [PR aprobado por Admin + Pruebas físicas exitosas]
+SIT (System Integration Test)
+  ▲
+  │  [PR aprobado por Admin]
+develop (Integración de Desarrollo)
+  ▲
+  │  [PR aprobado por Admin]
+feature/<usuario>/<descripcion> (Desarrollo individual)
+```
 
-The vast majority of pull requests seen on the ftctechnh/ftc_app repository are not intended to be merged into the official SDK.  Team software is just that, your team's.  It's specific to the tasks you are trying to accomplish, the testing you are doing, and goals your team has.  You don't want that pushed into the official SDK.
+### Descripción de Ramas
 
-If what you've read so far makes little sense, there are some very good git learning resources online.  
-[Git Book](https://git-scm.com/book/en/v2)  
-[Interactive Git Tutorial](https://try.github.io)
+* **`master` / `main` (Producción / Competencia):**
+    * Versión final y estable que se cargará en el Control Hub / Driver Station durante la competencia oficial.
+* **`UAT` (User Acceptance Test):**
+    * Código validado y aprobado formalmente por los coaches y mentores del equipo.
+* **`SIT` (System Integration Test):**
+    * Código que ya fue probado físicamente en el robot real y ha demostrado funcionar correctamente en hardware integrado.
+* **`develop`:**
+    * Rama de integración activa. Aquí convergen las diferentes partes del código en desarrollo antes de probarse en el robot completo.
+* **Ramas `feature/...`:**
+    * Ramas de trabajo diario de cada programador donde se implementan nuevas funciones o mejoras.
 
-### Guidlines for experienced GIT users.
+---
 
-If you are absolutely certain that you want to push the big green button above, read on.  Otherwise back _slowly away from keyboard_.
+## 2. Convención de Nombres para Ramas
 
-The real intent for advanced users is often to issue a pull request from the [branch](https://www.atlassian.com/git/tutorials/using-branches/git-branch) on a local fork back to master on either the same local fork or a child of the team fork and not on the parent ftctechnh/ftc_app.  See [Creating a Pull Request](https://help.github.com/articles/creating-a-pull-request-from-a-fork/).
+Todas las ramas de trabajo deben crearse a partir de la rama **`develop`** y seguir la siguiente nomenclatura:
 
-If that is indeed the intent, then you can merge your [topic branch](https://git-scm.com/book/en/v2/Git-Branching-Branching-Workflows#Topic-Branches) into master locally by hand before pushing it up to github, or if you want a pull request for pulls between branches on the same repository because, say, you want team members to look at your software before merging into master, you can select the base fork from the dropdown on the "Open a pull request" page and select your team repo instead of ftctechnh's.
+```bash
+feature/<usuario>/<descripcion-o-modulo><version-opcional>
+```
 
-Alternatively, if you have a team repository forked from ftctechnh/ftc_app, and then team members individually fork from your team repository, then pull requests from the individual team member's forks will have the main team repository automatically selected as the base fork for the pull. And you won't inadvertently request to pull your team software into ftctechnh's repository.
+### Reglas:
+1. **`<usuario>`:** Tu nombre o alias de GitHub (ej. `mar`).
+2. **`<descripcion-o-modulo>`:** Nombre corto que describa lo que estás programando (ej. `camara`, `telem`, `vision`).
+3. **Versión o iteración (opcional pero recomendado):** Puedes agregar un número para distinguir versiones del feature (ej. `00`, `07`).
 
-The latter would be the "best" way to manage software among a large team. But as with all things git there are many options.
+### Ejemplos válidos:
+* `feature/mar/vision07`
+* `feature/mar/camara`
+* `feature/mar/telem`
 
-Pull requests that do not fall into the category above are evaluated by the FTC Technology Team on a case-by-case basis.  Please note however that the deployment model of the SDK does not support direct pulls into ftctechnh/ftc_app.  
+---
 
-### Report bugs
+## 3. Flujo de Trabajo Paso a Paso
 
-This section guides you through filing a bug report.  The better the report the more likely it is to be root caused and fixed.  Please refrain from feature requests or software enhancements when opening new issues.  See Suggesting Enhancements below.
+### Paso 1: Crear tu rama local
+Asegúrate de estar en `develop` actualizado antes de partir:
+```bash
+git checkout develop
+git pull origin develop
+git checkout -b feature/tu-usuario/nombre-feature
+```
 
-#### Before submitting a bug report
+### Paso 2: Desarrollar y probar individualmente
+Realiza tus commits describiendo claramente los cambios:
+```bash
+git add .
+git commit -m "feat(vision): calibracion inicial de pipeline april tags"
+git push origin feature/tu-usuario/nombre-feature
+```
 
-- Check the [forums](http://ftcforum.firstinspires.org/forum.php) to see if someone else has run into the problem and whether there is an official solution that doesn't require a new SDK.
+### Paso 3: Pull Request a `develop`
+* Una vez que tu feature funcione de manera individual, abre un **Pull Request hacia `develop`**.
+* **Requisito:** Ningún merge a `develop` es directo; debe ser revisado y autorizado por el **Administrador del repositorio**.
 
-- Perform a search of current [issues](https://github.com/FIRST-Tech-Challenge/FtcRobotController/issues) to see if the problem has already been reported.  If so, add a comment to the existing issue instead of creating a new one.
+### Paso 4: Promoción a `SIT` (System Integration Test)
+* Una vez que los módulos se hayan integrado en `develop` y estén listos para cargarse al robot físico, se genera un **PR de `develop` hacia `SIT`**.
+* Debe probarse en el hardware del robot.
+* Se requiere autorización del **Administrador del repositorio**.
 
-#### How Do I Submit A (Good) Bug Report?
+### Paso 5: Promoción a `UAT` (User Acceptance Test)
+* Una vez que las pruebas físicas en `SIT` sean exitosas, se crea un **PR de `SIT` hacia `UAT`**.
+* Se requiere validación y visto bueno de los **coaches** y la aprobación del **Admin**.
 
-Bugs are tracked as GitHub issues. Create an issue on ftctechnh/ftc_app and provide the following information.
-Explain the problem and include additional details to help maintainers reproduce the problem:
+### Paso 6: Despliegue a `master` (Competencia)
+* Antes del torneo o evento oficial, el código en `UAT` se transfiere a `master` mediante Pull Request final aprobado por el Administrador.
 
-- Use a clear and descriptive title for the issue to identify the problem.
+---
 
-- Describe the exact steps which reproduce the problem in as many details as possible.
+## 4. Reglas de Pull Requests (PR)
 
-- Provide specific examples to demonstrate the steps.
-
-- Describe the behavior you observed after following the steps and point out what exactly is the problem with that behavior. Explain which behavior you expected to see instead and why. If applicable, include screenshots which show you following the described steps and clearly demonstrate the problem.
-
-- If you're reporting that the RobotController crashed, include the logfile with a stack trace of the crash.  [Example of good bug report with stack trace](https://github.com/ftctechnh/ftc_app/issues/224)
-
-- If the problem wasn't triggered by a specific action, describe what you were doing before the problem happened and share more information using the guidelines below.
-
-### Suggesting Enhancements
-
-FIRST volunteers are awesome.  You all have great ideas and we want to hear them.  
-
-Enhancements should be broadly applicable to a large majority of teams, should not force teams to change their workflow, and should provide real value to the mission of FIRST as it relates to engaging youth in engineering activities.
-
-The best way to get momentum behind new features is to post a description of your idea in the discussions section of this repository.  Build community support for it.  The FTC Technology Team monitors the discussions.  We'll hear you and if there's a large enough call for the feature it's very likely to get put on the list for a future release.
+1. **Título claro:** Indica brevemente el módulo y qué hace (ej. `feat(vision): integración de pipeline de detección`).
+2. **Descripción completa:**
+    * ¿Qué se agregó o corrigió?
+    * ¿Cómo se probó (simulador, banco de pruebas o robot)?
+3. **No self-merge:** Está prohibido mergear tus propios PRs a ramas protegidas.
+4. **Mantén tu rama al día:** Si `develop` tiene cambios nuevos, haz `git rebase develop` o `git merge develop` en tu rama feature antes de solicitar revisión.
