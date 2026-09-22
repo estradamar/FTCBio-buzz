@@ -1,49 +1,78 @@
 package org.firstinspires.ftc.teamcode.vision;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.limelightvision.Limelight3A;
-import com.qualcomm.robotcore.hardware.HardwareMap;
+import org.firstinspires.ftc.teamcode.RobotHardware;
 
-public class limelight {
+public class Limelight {
 
-    private final Limelight3A limelight;
+    private final RobotHardware robot;
+    private LLResult latestResult = null;
 
-    public limelight(HardwareMap hardwareMap) {
-        this(hardwareMap, "limelight");
-    }
-
-    public limelight(HardwareMap hardwareMap, String name) {
-        limelight = hardwareMap.get(Limelight3A.class, name);
-        limelight.pipelineSwitch(0);
-        limelight.start();
-    }
-
-    public void update() {
-        // No-op por compatibilidad
-    }
-
-    public boolean hasTarget() {
-        LLResult result = limelight.getLatestResult();
-        return result != null && result.isValid();
+    public Limelight(RobotHardware robot) {
+        this.robot = robot;
+        if (robot.limelight != null) {
+            robot.limelight.setPollRateHz(100); // Standard for Limelight 3A
+            robot.limelight.pipelineSwitch(0);
+            robot.limelight.start();
+        }
     }
 
     /**
-     * ID del AprilTag principal detectado (-1 si no hay ninguno).
+     * Reads the latest data from the camera. Must be called once per loop in TeleOp/Auto.
+     */
+    public void update() {
+        if (robot.limelight != null) {
+            latestResult = robot.limelight.getLatestResult();
+        }
+    }
+
+    public void updateDashboard() {
+        update();
+    }
+
+    public boolean hasTarget() {
+        return latestResult != null && latestResult.isValid();
+    }
+
+    /**
+     * ID of the primary detected AprilTag (-1 if none).
      */
     public int getPrimaryTagId() {
-        LLResult result = limelight.getLatestResult();
-        if (result == null || !result.isValid() || result.getFiducialResults().isEmpty()) {
+        if (!hasTarget() || latestResult.getFiducialResults().isEmpty()) {
             return -1;
         }
-        return result.getFiducialResults().get(0).getFiducialId();
+        return latestResult.getFiducialResults().get(0).getFiducialId();
+    }
+
+    public int getTargetId() {
+        return getPrimaryTagId();
     }
 
     public double getTx() {
-        LLResult result = limelight.getLatestResult();
-        return (result != null && result.isValid()) ? result.getTx() : 0.0;
+        return hasTarget() ? latestResult.getTx() : 0.0;
+    }
+
+    public double getTy() {
+        return hasTarget() ? latestResult.getTy() : 0.0;
+    }
+
+    public double getTa() {
+        return hasTarget() ? latestResult.getTa() : 0.0;
+    }
+
+    public LLResult getLatestResult() {
+        return latestResult;
+    }
+
+    public void setPipeline(int pipelineIndex) {
+        if (robot.limelight != null) {
+            robot.limelight.pipelineSwitch(pipelineIndex);
+        }
     }
 
     public void stop() {
-        limelight.stop();
+        if (robot.limelight != null) {
+            robot.limelight.stop();
+        }
     }
 }
