@@ -1,49 +1,53 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 public class RobotHardware {
+    public DcMotorEx m0 = null;
+    public DcMotorEx m1 = null;
+    public DcMotorEx m2 = null;
+    public DcMotorEx m3 = null;
 
-    // Chassis Motors
-    public DcMotorEx frontLeft = null;
-    public DcMotorEx backLeft = null;
-    public DcMotorEx frontRight = null;
-    public DcMotorEx backRight = null;
+    public VoltageSensor batteryVoltageSensor;
 
-    // Vision & Indicators
-    public Limelight3A limelight = null;
-    public Servo rgbLight = null;
+    // MAX RPM for REV Core Hex
+    public static final double MAX_RPM = 125.0;
+    public static final double TICKS_PER_REV = 288.0;
 
     public RobotHardware(HardwareMap hwMap) {
-        // --- CHASSIS MOTORS ---
-        frontLeft = hwMap.get(DcMotorEx.class, "frontLeft");
-        backLeft = hwMap.get(DcMotorEx.class, "backLeft");
-        frontRight = hwMap.get(DcMotorEx.class, "frontRight");
-        backRight = hwMap.get(DcMotorEx.class, "backRight");
+        // m0 is mandatory. If not found, hwMap.get throws IllegalArgumentException.
+        m0 = hwMap.get(DcMotorEx.class, "m0");
+        configureMotor(m0);
 
-        // --- VISION & LIGHTS ---
-        limelight = hwMap.get(Limelight3A.class, "limelight");
-        rgbLight = hwMap.get(Servo.class, "rgb_light");
+        // m1, m2, m3 are optional
+        m1 = tryGetMotor(hwMap, "m1");
+        m2 = tryGetMotor(hwMap, "m2");
+        m3 = tryGetMotor(hwMap, "m3");
 
-        // --- CONFIGURATION ---
-        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        if (hwMap.voltageSensor.iterator().hasNext()) {
+            batteryVoltageSensor = hwMap.voltageSensor.iterator().next();
+        }
+    }
 
-        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    private DcMotorEx tryGetMotor(HardwareMap hwMap, String name) {
+        try {
+            DcMotorEx motor = hwMap.get(DcMotorEx.class, name);
+            if (motor != null) {
+                configureMotor(motor);
+            }
+            return motor;
+        } catch (IllegalArgumentException e) {
+            return null; // Not found, which is fine for optional motors
+        }
+    }
 
-        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    private void configureMotor(DcMotorEx motor) {
+        if (motor == null) return;
+        motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 }
