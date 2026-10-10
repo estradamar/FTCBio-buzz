@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.RobotHardware;
 
@@ -13,10 +15,22 @@ public class chassis {
 
     public void drive(double forward, double strafe, double turn) {
         // Mecanum kinematics formula
-        double frontLeftPower = forward + strafe + turn;
+
+// Asegúrate de invertir el eje Y del joystick (hacia adelante es negativo por defecto)
+        forward = -gamepad1.left_stick_y;
+        strafe = gamepad1.left_stick_x;
+        turn = gamepad1.right_x;
+
+// Configuración matemática correcta para chasis Mecanum
+        double frontLeftPower  = forward + strafe + turn;
         double frontRightPower = forward - strafe - turn;
-        double backLeftPower = forward - strafe + turn;
-        double backRightPower = forward + strafe - turn;
+        double backLeftPower   = forward - strafe + turn;
+        double backRightPower  = forward + strafe - turn;
+
+         //  double frontLeftPower = forward + strafe + turn;
+        //  double frontRightPower = forward - strafe - turn;
+        //  double backLeftPower = forward - strafe + turn;
+        //  double backRightPower = forward + strafe - turn;
 
         // Normalization to maintain ratio if powers exceed 1.0
         double max = Math.max(Math.abs(frontLeftPower), Math.abs(backLeftPower));
