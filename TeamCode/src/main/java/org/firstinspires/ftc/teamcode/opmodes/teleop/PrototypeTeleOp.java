@@ -17,7 +17,7 @@ public class PrototypeTeleOp extends OpMode {
         boolean isRightSide;
 
         boolean tripped = false;
-        double targetSpeedPct = 0.5; // Start at 50%
+        double targetSpeedPct = 1.0; // Start at 100%
         boolean isReversed = false;
 
         double peakCurrent = 0.0;
@@ -31,7 +31,7 @@ public class PrototypeTeleOp extends OpMode {
         public MotorState(DcMotorEx m, boolean rightSide) {
             this.motor = m;
             this.isRightSide = rightSide;
-            this.targetSpeedPct = 0.0; // Start at 0%
+            this.targetSpeedPct = 1.0; // Start at 100%
         }
     }
 
@@ -70,8 +70,8 @@ public class PrototypeTeleOp extends OpMode {
             return;
         }
 
-        if (robot.m0 != null) ms0 = new MotorState(robot.m0, false);
-        if (robot.m1 != null) ms1 = new MotorState(robot.m1, true);
+        if (robot.m0 != null) ms0 = new MotorState(robot.m0, true);
+        if (robot.m1 != null) ms1 = new MotorState(robot.m1, false);
         if (robot.m2 != null) ms2 = new MotorState(robot.m2, false);
         if (robot.m3 != null) ms3 = new MotorState(robot.m3, true);
 
@@ -101,7 +101,8 @@ public class PrototypeTeleOp extends OpMode {
             telemetry.addData("Battery Lowest", "%.2f V", lowestBatteryVoltage);
             telemetry.addLine();
         }
-
+;
+        
         handleMotor(ms0, gamepad1, prevGp1, "m0");
         handleMotor(ms1, gamepad1, prevGp1, "m1");
         handleMotor(ms2, gamepad2, prevGp2, "m2");
@@ -134,7 +135,7 @@ public class PrototypeTeleOp extends OpMode {
         }
 
         // 2. Read inputs
-        boolean triggerPressed = ms.isRightSide ? (gp.right_trigger > 0.5) : (gp.left_trigger > 0.5);
+        boolean triggerPressed = ms.isRightSide ? (gp.right_trigger > 0.1) : (gp.left_trigger > 0.1);
         boolean bumperPressed = ms.isRightSide ? gp.right_bumper : gp.left_bumper;
         boolean prevBumperPressed = ms.isRightSide ? prevGp.right_bumper : prevGp.left_bumper;
 
@@ -144,10 +145,6 @@ public class PrototypeTeleOp extends OpMode {
         boolean prevDownPressed = ms.isRightSide ? prevGp.dpad_left : prevGp.dpad_down;
 
         // 3. Process inputs
-        if (bumperPressed && !prevBumperPressed) {
-            ms.isReversed = !ms.isReversed;
-        }
-
         if (upPressed && !prevUpPressed) {
             ms.targetSpeedPct += 0.05;
             if (ms.targetSpeedPct > 1.0) ms.targetSpeedPct = 1.0;
@@ -166,13 +163,16 @@ public class PrototypeTeleOp extends OpMode {
 
         double measuredVelocity = Math.abs(ms.motor.getVelocity()); // ticks per sec
 
-        if (triggerPressed) {
+        if (triggerPressed || bumperPressed) {
+            // Trigger moves forward, bumper moves backward (opposite direction)
+            ms.isReversed = bumperPressed && !triggerPressed;
             double power = ms.targetSpeedPct * (ms.isReversed ? -1.0 : 1.0);
             ms.motor.setPower(power);
 
             long currentTime = System.currentTimeMillis();
 
-            // Velocity Failsafe Check (< 10 ticks/s for 0.6s)
+            // Velocity Failsafe Check disabled for testing without encoders
+            /*
             if (measuredVelocity < 10.0 && ms.targetSpeedPct > 0.0) {
                 if (!ms.isVelocityStalling) {
                     ms.isVelocityStalling = true;
@@ -184,8 +184,10 @@ public class PrototypeTeleOp extends OpMode {
                 ms.isVelocityStalling = false;
                 ms.stallStartTime = 0;
             }
+            */
 
-            // Current Failsafe Check (Continuous > 4.0A, giving 0.2s for inrush to settle)
+            // Current Failsafe Check disabled for prototype testing
+            /*
             if (currentAmps > 4.0) {
                 if (!ms.isOvercurrent) {
                     ms.isOvercurrent = true;
@@ -197,6 +199,7 @@ public class PrototypeTeleOp extends OpMode {
                 ms.isOvercurrent = false;
                 ms.overcurrentStartTime = 0;
             }
+            */
 
         } else {
             ms.motor.setPower(0);
@@ -211,11 +214,11 @@ public class PrototypeTeleOp extends OpMode {
         double actualRPM = (ms.motor.getVelocity() / RobotHardware.TICKS_PER_REV) * 60.0;
 
         telemetry.addData("--- " + name + " ---", ms.isRightSide ? "(Right Side)" : "(Left Side)");
-        telemetry.addData("Target Power", "%.0f%% (%s)", ms.targetSpeedPct * 100.0, ms.isReversed ? "REV" : "FWD");
-        telemetry.addData("Target RPM", "%.1f", targetRPM);
-        telemetry.addData("Actual RPM", "%.1f", actualRPM);
-        telemetry.addData("Current (Live/Peak)", "%.2f A / %.2f A", currentAmps, ms.peakCurrent);
-        telemetry.addData("Status", triggerPressed ? "RUNNING" : "STOPPED");
+        telemetry.addData(name + " Target Power", "%.0f%% (%s)", ms.targetSpeedPct * 100.0, ms.isReversed ? "REV" : "FWD");
+        telemetry.addData(name + " Target RPM", "%.1f", targetRPM);
+        telemetry.addData(name + " Actual RPM", "%.1f", actualRPM);
+        telemetry.addData(name + " Current (Live/Peak)", "%.2f A / %.2f A", currentAmps, ms.peakCurrent);
+        telemetry.addData(name + " Status", (triggerPressed || bumperPressed) ? "RUNNING" : "STOPPED");
     }
 
     private void tripMotor(MotorState ms, Gamepad gp, String reason) {

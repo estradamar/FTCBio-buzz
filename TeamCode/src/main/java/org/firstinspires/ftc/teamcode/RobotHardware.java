@@ -13,9 +13,9 @@ public class RobotHardware {
 
     public VoltageSensor batteryVoltageSensor;
 
-    // MAX RPM for REV Core Hex
-    public static final double MAX_RPM = 125.0;
-    public static final double TICKS_PER_REV = 288.0;
+    // MAX RPM for bare REV HD Hex Motor
+    public static final double MAX_RPM = 6000.0;
+    public static final double TICKS_PER_REV = 28.0;
 
     public RobotHardware(HardwareMap hwMap) {
         // m0 is mandatory. If not found, hwMap.get throws IllegalArgumentException.
@@ -48,6 +48,6 @@ public class RobotHardware {
         if (motor == null) return;
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 }
